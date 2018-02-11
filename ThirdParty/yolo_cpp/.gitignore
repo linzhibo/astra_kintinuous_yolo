@@ -1,0 +1,16 @@
+.idea
+build
+data
+obj
+cfg
+CMakeFiles
+CMakeCache
+*.jpg
+*.csv
+bad.list
+Makefile
+CMakeCache.txt
+*.swp
+darknet
+darknet_cpp
+*.py~
