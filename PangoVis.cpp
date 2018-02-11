@@ -49,13 +49,16 @@ PangoVis::PangoVis(cv::Mat * depthIntrinsics)
 
     rgbTex.Reinitialise(Resolution::get().width(), Resolution::get().height()),
     depthTex.Reinitialise(Resolution::get().width(), Resolution::get().height()),
-    tsdfRgbTex.Reinitialise(Resolution::get().width(), Resolution::get().height()),
+    //tsdfRgbTex.Reinitialise(Resolution::get().width(), Resolution::get().height()),
     tsdfTex.Reinitialise(Resolution::get().width(), Resolution::get().height()),
+//add yolo detection screen
+    yoloTex.Reinitialise(Resolution::get().width(), Resolution::get().height()),
 
     rgbImg.Reinitialise(Resolution::get().width(), Resolution::get().height());
     tsdfImg.Reinitialise(Resolution::get().width(), Resolution::get().height());
-    tsdfImgColor.Reinitialise(Resolution::get().width(), Resolution::get().height());
+    //tsdfImgColor.Reinitialise(Resolution::get().width(), Resolution::get().height());
     depthImg.Reinitialise(Resolution::get().width(), Resolution::get().height());
+    yoloImg.Reinitialise(Resolution::get().width(), Resolution::get().height());
 
     glEnable(GL_DEPTH_TEST);
 
@@ -444,7 +447,8 @@ void PangoVis::render()
     depthTex.RenderToViewport(true);
 
     pangolin::Display("ModelImg").Activate();
-    tsdfRgbTex.RenderToViewport(true);
+    //tsdfRgbTex.RenderToViewport(true);
+    yoloTex.RenderToViewport(true);
 
     pangolin::Display("Model").Activate();
     tsdfTex.RenderToViewport(true);
@@ -461,10 +465,11 @@ void PangoVis::processImages()
         threadPack.tracker->imageAvailable = false;
 
         memcpy(tsdfImg.ptr, threadPack.tracker->getLiveImage()->tsdfImage, Resolution::get().numPixels() * 3);
-        memcpy(tsdfImgColor.ptr, threadPack.tracker->getLiveImage()->tsdfImageColor, Resolution::get().numPixels() * 3);
+        //memcpy(tsdfImgColor.ptr, threadPack.tracker->getLiveImage()->tsdfImageColor, Resolution::get().numPixels() * 3);
         memcpy(rgbImg.ptr, threadPack.tracker->getLiveImage()->rgbImage, Resolution::get().numPixels() * 3);
         memcpy(&depthBuffer[0], threadPack.tracker->getLiveImage()->depthData, Resolution::get().numPixels() * 2);
-
+        memcpy(yoloImg.ptr, threadPack.tracker->getLiveImage()->rgbImage, Resolution::get().numPixels() * 3);
+        LoadYolo();
         imageLock.unlock();
 
         float max = 0;
@@ -486,8 +491,9 @@ void PangoVis::processImages()
 
         rgbTex.Upload(rgbImg.ptr, GL_RGB, GL_UNSIGNED_BYTE);
         depthTex.Upload(depthImg.ptr, GL_RGB, GL_UNSIGNED_BYTE);
-        tsdfRgbTex.Upload(tsdfImgColor.ptr, GL_RGB, GL_UNSIGNED_BYTE);
+        //tsdfRgbTex.Upload(tsdfImgColor.ptr, GL_RGB, GL_UNSIGNED_BYTE);
         tsdfTex.Upload(tsdfImg.ptr, GL_BGR, GL_UNSIGNED_BYTE);
+        yoloTex.Upload(yoloImg.ptr, GL_RGB, GL_UNSIGNED_BYTE);
 
         //For a minimal "TSDF" visualisation
         if(!drawTSDF)
@@ -645,4 +651,15 @@ void PangoVis::handleInput()
 void PangoVis::postCall()
 {
     pangolin::FinishFrame();
+}
+
+void PangoVis::LoadYolo()
+{
+    Yolo yolo;
+    yolo.setConfigFilePath("../cfg/tiny-yolo-voc.cfg");
+    yolo.setDataFilePath("../cfg/voc.data");
+    yolo.setWeightFilePath("../tiny-yolo-voc.weights");
+    yolo.setAlphabetPath("../data/labels/");
+    yolo.setNameListFile("../data/voc.names");
+    yolo.setThreshold(0.3);
 }

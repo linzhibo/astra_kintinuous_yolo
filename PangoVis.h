@@ -23,6 +23,7 @@
 #include "frontend/Volume.h"
 #include "utils/PangoCloud.h"
 #include "utils/PangoMesh.h"
+#include <yolo.h>
 
 class PangoVis : public ThreadObject
 {
@@ -100,12 +101,15 @@ class PangoVis : public ThreadObject
         pangolin::GlTexture rgbTex,
                             depthTex,
                             tsdfRgbTex,
-                            tsdfTex;
+                            tsdfTex,
+                            yoloTex;
 
         pangolin::ManagedImage<uchar3> rgbImg;
         pangolin::ManagedImage<uchar3> tsdfImg;
         pangolin::ManagedImage<uchar3> tsdfImgColor;
         pangolin::ManagedImage<uchar3> depthImg;
+        pangolin::ManagedImage<uchar3> yoloImg;
+        void LoadYolo();
 
         unsigned short * depthBuffer;
 };
