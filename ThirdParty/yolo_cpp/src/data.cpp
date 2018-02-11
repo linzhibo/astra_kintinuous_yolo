@@ -9,14 +9,14 @@
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-list *get_paths(char *filename)
+yolo_list *get_paths(char *filename)
 {
     char *path;
     FILE *file = fopen(filename, "r");
     if(!file) file_error(filename);
-    list *lines = make_list();
+    yolo_list *lines = make_yolo_list();
     while((path=fgetl(file))){
-        list_insert(lines, path);
+        yolo_list_insert(lines, path);
     }
     fclose(file);
     return lines;
@@ -471,9 +471,9 @@ matrix load_tags_paths(char **paths, int n, int k)
 
 char **get_labels(char *filename)
 {
-    list *plist = get_paths(filename);
-    char **labels = (char **)list_to_array(plist);
-    free_list(plist);
+    yolo_list *pyolo_list = get_paths(filename);
+    char **labels = (char **)yolo_list_to_array(pyolo_list);
+    free_yolo_list(pyolo_list);
     return labels;
 }
 

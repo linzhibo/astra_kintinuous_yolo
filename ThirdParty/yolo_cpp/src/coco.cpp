@@ -21,7 +21,7 @@ void train_coco(char *cfgfile, char *weightfile)
     //char *train_images = "/home/pjreddie/data/voc/test/train.txt";
     //char *train_images = "/home/pjreddie/data/coco/train.txt";
     char *train_images = "data/coco.trainval.txt";
-    //char *train_images = "data/bags.train.list";
+    //char *train_images = "data/bags.train.yolo_list";
     char *backup_directory = "/home/pjreddie/backup/";
     srand(time(0));
     char *base = basecfg(cfgfile);
@@ -43,16 +43,16 @@ void train_coco(char *cfgfile, char *weightfile)
     int classes = l.classes;
     float jitter = l.jitter;
 
-    list *plist = get_paths(train_images);
-    //int N = plist->size;
-    char **paths = (char **)list_to_array(plist);
+    yolo_list *pyolo_list = get_paths(train_images);
+    //int N = pyolo_list->size;
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
 
     load_args args = {0};
     args.w = net.w;
     args.h = net.h;
     args.paths = paths;
     args.n = imgs;
-    args.m = plist->size;
+    args.m = pyolo_list->size;
     args.classes = classes;
     args.jitter = jitter;
     args.num_boxes = side;
@@ -149,10 +149,10 @@ void validate_coco(char *cfgfile, char *weightfile)
     srand(time(0));
 
     char *base = "results/";
-    list *plist = get_paths("data/coco_val_5k.list");
-    //list *plist = get_paths("/home/pjreddie/data/people-art/test.txt");
-    //list *plist = get_paths("/home/pjreddie/data/voc/test/2007_test.txt");
-    char **paths = (char **)list_to_array(plist);
+    yolo_list *pyolo_list = get_paths("data/coco_val_5k.list");
+    //yolo_list *pyolo_list = get_paths("/home/pjreddie/data/people-art/test.txt");
+    //yolo_list *pyolo_list = get_paths("/home/pjreddie/data/voc/test/2007_test.txt");
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
 
     layer l = net.layers[net.n-1];
     int classes = l.classes;
@@ -168,7 +168,7 @@ void validate_coco(char *cfgfile, char *weightfile)
     float **probs = (float**)calloc(side*side*l.n, sizeof(float *));
     for(j = 0; j < side*side*l.n; ++j) probs[j] = (float*)calloc(classes, sizeof(float *));
 
-    int m = plist->size;
+    int m = pyolo_list->size;
     int i=0;
     int t;
 
@@ -240,8 +240,8 @@ void validate_coco_recall(char *cfgfile, char *weightfile)
     srand(time(0));
 
     char *base = "results/comp4_det_test_";
-    list *plist = get_paths("/home/pjreddie/data/voc/test/2007_test.txt");
-    char **paths = (char **)list_to_array(plist);
+    yolo_list *pyolo_list = get_paths("/home/pjreddie/data/voc/test/2007_test.txt");
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
 
     layer l = net.layers[net.n-1];
     int classes = l.classes;
@@ -258,7 +258,7 @@ void validate_coco_recall(char *cfgfile, char *weightfile)
     float **probs = (float**)calloc(side*side*l.n, sizeof(float *));
     for(j = 0; j < side*side*l.n; ++j) probs[j] = (float*)calloc(classes, sizeof(float *));
 
-    int m = plist->size;
+    int m = pyolo_list->size;
     int i=0;
 
     float thresh = .001;

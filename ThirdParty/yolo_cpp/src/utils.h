@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <time.h>
-#include "list.h"
+#include "yolo_list.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,11 +52,11 @@ void strip_char(char *s, char bad);
 
 void top_k(float *a, int n, int k, int *index);
 
-list *split_str(char *s, char delim);
+yolo_list *split_str(char *s, char delim);
 
 char *fgetl(FILE *fp);
 
-list *parse_csv_line(char *line);
+yolo_list *parse_csv_line(char *line);
 
 char *copy_string(char *s);
 

@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
-#include "list.h"
+#include "yolo_list.h"
 
-list *make_list()
+yolo_list *make_yolo_list()
 {
-	list *l = (list*)malloc(sizeof(list));
+	yolo_list *l = (yolo_list*)malloc(sizeof(yolo_list));
 	l->size = 0;
 	l->front = 0;
 	l->back = 0;
@@ -12,7 +12,7 @@ list *make_list()
 }
 
 /*
-void transfer_node(list *s, list *d, node *n)
+void transfer_node(yolo_list *s, yolo_list *d, node *n)
 {
     node *prev, *next;
     prev = n->prev;
@@ -25,7 +25,7 @@ void transfer_node(list *s, list *d, node *n)
 }
 */
 
-void *list_pop(list *l){
+void *yolo_list_pop(yolo_list *l){
     if(!l->back) return 0;
     node *b = l->back;
     void *val = b->val;
@@ -37,7 +37,7 @@ void *list_pop(list *l){
     return val;
 }
 
-void list_insert(list *l, void *val)
+void yolo_list_insert(yolo_list *l, void *val)
 {
 	node *new_ = (node*)malloc(sizeof(node));
 	new_->val = val;
@@ -64,13 +64,13 @@ void free_node(node *n)
 	}
 }
 
-void free_list(list *l)
+void free_yolo_list(yolo_list *l)
 {
 	free_node(l->front);
 	free(l);
 }
 
-void free_list_contents(list *l)
+void free_yolo_list_contents(yolo_list *l)
 {
 	node *n = l->front;
 	while(n){
@@ -79,7 +79,7 @@ void free_list_contents(list *l)
 	}
 }
 
-void **list_to_array(list *l)
+void **yolo_list_to_array(yolo_list *l)
 {
     void **a = (void**)calloc(l->size, sizeof(void*));
     int count = 0;

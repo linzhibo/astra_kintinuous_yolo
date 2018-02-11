@@ -206,16 +206,16 @@ void file_error(char *s)
     exit(0);
 }
 
-list *split_str(char *s, char delim)
+yolo_list *split_str(char *s, char delim)
 {
     size_t i;
     size_t len = strlen(s);
-    list *l = make_list();
-    list_insert(l, s);
+    yolo_list *l = make_yolo_list();
+    yolo_list_insert(l, s);
     for(i = 0; i < len; ++i){
         if(s[i] == delim){
             s[i] = '\0';
-            list_insert(l, &(s[i+1]));
+            yolo_list_insert(l, &(s[i+1]));
         }
     }
     return l;
@@ -349,20 +349,20 @@ char *copy_string(char *s)
     return copy;
 }
 
-list *parse_csv_line(char *line)
+yolo_list *parse_csv_line(char *line)
 {
-    list *l = make_list();
+    yolo_list *l = make_yolo_list();
     char *c, *p;
     int in = 0;
     for(c = line, p = line; *c != '\0'; ++c){
         if(*c == '"') in = !in;
         else if(*c == ',' && !in){
             *c = '\0';
-            list_insert(l, copy_string(p));
+            yolo_list_insert(l, copy_string(p));
             p = c+1;
         }
     }
-    list_insert(l, copy_string(p));
+    yolo_list_insert(l, copy_string(p));
     return l;
 }
 

@@ -4,11 +4,11 @@
 #include "utils.h"
 #include "data.h"
 
-void change_leaves(tree *t, char *leaf_list)
+void change_leaves(tree *t, char *leaf_yolo_list)
 {
-    list *llist = get_paths(leaf_list);
-    char **leaves = (char **)list_to_array(llist);
-    int n = llist->size;
+    yolo_list *lyolo_list = get_paths(leaf_yolo_list);
+    char **leaves = (char **)yolo_list_to_array(lyolo_list);
+    int n = lyolo_list->size;
     int i,j;
     int found = 0;
     for(i = 0; i < t->n; ++i){

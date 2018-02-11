@@ -40,15 +40,15 @@ void train_captcha(char *cfgfile, char *weightfile)
     int imgs = 1024;
     int i = *net.seen/imgs;
     int solved = 1;
-    list *plist;
+    yolo_list *pyolo_list;
     char **labels = get_labels("/data/captcha/reimgs.labels.list");
     if (solved){
-        plist = get_paths("/data/captcha/reimgs.solved.list");
+        pyolo_list = get_paths("/data/captcha/reimgs.solved.list");
     }else{
-        plist = get_paths("/data/captcha/reimgs.raw.list");
+        pyolo_list = get_paths("/data/captcha/reimgs.raw.list");
     }
-    char **paths = (char **)list_to_array(plist);
-    printf("%d\n", plist->size);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    printf("%d\n", pyolo_list->size);
     clock_t time;
     pthread_t load_thread;
     data train;
@@ -60,7 +60,7 @@ void train_captcha(char *cfgfile, char *weightfile)
     args.paths = paths;
     args.classes = 26;
     args.n = imgs;
-    args.m = plist->size;
+    args.m = pyolo_list->size;
     args.labels = labels;
     args.d = &buffer;
     args.type = CLASSIFICATION_DATA;
@@ -142,9 +142,9 @@ void valid_captcha(char *cfgfile, char *weightfile, char *filename)
     if(weightfile){
         load_weights(&net, weightfile);
     }
-    list *plist = get_paths("/data/captcha/reimgs.fg.list");
-    char **paths = (char **)list_to_array(plist);
-    int N = plist->size;
+    yolo_list *pyolo_list = get_paths("/data/captcha/reimgs.fg.list");
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int N = pyolo_list->size;
     int outputs = net.outputs;
 
     set_batch_network(&net, 1);
@@ -190,14 +190,14 @@ void valid_captcha(char *cfgfile, char *weightfile, char *filename)
    printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net.learning_rate, net.momentum, net.decay);
    int imgs = 1024;
    int i = net.seen/imgs;
-   list *plist = get_paths("/data/captcha/train.auto5");
-   char **paths = (char **)list_to_array(plist);
-   printf("%d\n", plist->size);
+   yolo_list *pyolo_list = get_paths("/data/captcha/train.auto5");
+   char **paths = (char **)yolo_list_to_array(pyolo_list);
+   printf("%d\n", pyolo_list->size);
    clock_t time;
    while(1){
    ++i;
    time=clock();
-   data train = load_data_captcha(paths, imgs, plist->size, 10, 200, 60);
+   data train = load_data_captcha(paths, imgs, pyolo_list->size, 10, 200, 60);
    translate_data_rows(train, -128);
    scale_data_rows(train, 1./128);
    printf("Loaded: %lf seconds\n", sec(clock()-time));
@@ -256,14 +256,14 @@ if(weightfile){
 printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net.learning_rate, net.momentum, net.decay);
 int imgs = 1024;
 int i = net.seen/imgs;
-list *plist = get_paths("/data/captcha/encode.list");
-char **paths = (char **)list_to_array(plist);
-printf("%d\n", plist->size);
+yolo_list *pyolo_list = get_paths("/data/captcha/encode.list");
+char **paths = (char **)yolo_list_to_array(pyolo_list);
+printf("%d\n", pyolo_list->size);
 clock_t time;
 while(1){
     ++i;
     time=clock();
-    data train = load_data_captcha_encode(paths, imgs, plist->size, 300, 57);
+    data train = load_data_captcha_encode(paths, imgs, pyolo_list->size, 300, 57);
     scale_data_rows(train, 1./255);
     printf("Loaded: %lf seconds\n", sec(clock()-time));
     time=clock();
@@ -291,9 +291,9 @@ void validate_captcha(char *cfgfile, char *weightfile)
         load_weights(&net, weightfile);
     }
     int numchars = 37;
-    list *plist = get_paths("/data/captcha/solved.hard");
-    char **paths = (char **)list_to_array(plist);
-    int imgs = plist->size;
+    yolo_list *pyolo_list = get_paths("/data/captcha/solved.hard");
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int imgs = pyolo_list->size;
     data valid = load_data_captcha(paths, imgs, 0, 10, 200, 60);
     translate_data_rows(valid, -128);
     scale_data_rows(valid, 1./128);

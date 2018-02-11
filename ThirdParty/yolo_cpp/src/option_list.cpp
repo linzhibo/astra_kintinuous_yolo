@@ -4,13 +4,13 @@
 #include "option_list.h"
 #include "utils.h"
 
-list *read_data_cfg(char *filename)
+yolo_list *read_data_cfg(char *filename)
 {
     FILE *file = fopen(filename, "r");
     if(file == 0) file_error(filename);
     char *line;
     int nu = 0;
-    list *options = make_list();
+    yolo_list *options = make_yolo_list();
     while((line=fgetl(file)) != 0){
         ++ nu;
         strip(line);
@@ -32,7 +32,7 @@ list *read_data_cfg(char *filename)
     return options;
 }
 
-int read_option(char *s, list *options)
+int read_option(char *s, yolo_list *options)
 {
     size_t i;
     size_t len = strlen(s);
@@ -50,16 +50,16 @@ int read_option(char *s, list *options)
     return 1;
 }
 
-void option_insert(list *l, char *key, char *val)
+void option_insert(yolo_list *l, char *key, char *val)
 {
     kvp *p = (kvp*)malloc(sizeof(kvp));
     p->key = key;
     p->val = val;
     p->used = 0;
-    list_insert(l, p);
+    yolo_list_insert(l, p);
 }
 
-void option_unused(list *l)
+void option_unused(yolo_list *l)
 {
     node *n = l->front;
     while(n){
@@ -71,7 +71,7 @@ void option_unused(list *l)
     }
 }
 
-char *option_find(list *l, char *key)
+char *option_find(yolo_list *l, char *key)
 {
     node *n = l->front;
     while(n){
@@ -84,7 +84,7 @@ char *option_find(list *l, char *key)
     }
     return 0;
 }
-char *option_find_str(list *l, char *key, char *def)
+char *option_find_str(yolo_list *l, char *key, char *def)
 {
     char *v = option_find(l, key);
     if(v) return v;
@@ -92,7 +92,7 @@ char *option_find_str(list *l, char *key, char *def)
     return def;
 }
 
-int option_find_int(list *l, char *key, int def)
+int option_find_int(yolo_list *l, char *key, int def)
 {
     char *v = option_find(l, key);
     if(v) return atoi(v);
@@ -100,21 +100,21 @@ int option_find_int(list *l, char *key, int def)
     return def;
 }
 
-int option_find_int_quiet(list *l, char *key, int def)
+int option_find_int_quiet(yolo_list *l, char *key, int def)
 {
     char *v = option_find(l, key);
     if(v) return atoi(v);
     return def;
 }
 
-float option_find_float_quiet(list *l, char *key, float def)
+float option_find_float_quiet(yolo_list *l, char *key, float def)
 {
     char *v = option_find(l, key);
     if(v) return atof(v);
     return def;
 }
 
-float option_find_float(list *l, char *key, float def)
+float option_find_float(yolo_list *l, char *key, float def)
 {
     char *v = option_find(l, key);
     if(v) return atof(v);

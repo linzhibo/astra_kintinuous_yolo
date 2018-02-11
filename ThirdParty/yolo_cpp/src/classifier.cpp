@@ -55,18 +55,18 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
     int imgs = net.batch * net.subdivisions * ngpus;
 
     printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net.learning_rate, net.momentum, net.decay);
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
     char *backup_directory = option_find_str(options, "backup", "/backup/");
-    char *label_list = option_find_str(options, "labels", "data/labels.list");
-    char *train_list = option_find_str(options, "train", "data/train.list");
+    char *label_yolo_list = option_find_str(options, "labels", "data/labels.list");
+    char *train_yolo_list = option_find_str(options, "train", "data/train.list");
     int classes = option_find_int(options, "classes", 2);
 
-    char **labels = get_labels(label_list);
-    list *plist = get_paths(train_list);
-    char **paths = (char **)list_to_array(plist);
-    printf("%d\n", plist->size);
-    int N = plist->size;
+    char **labels = get_labels(label_yolo_list);
+    yolo_list *pyolo_list = get_paths(train_yolo_list);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    printf("%d\n", pyolo_list->size);
+    int N = pyolo_list->size;
     clock_t time;
 
     load_args args = {0};
@@ -140,8 +140,8 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
 
     free_network(net);
     free_ptrs((void**)labels, classes);
-    free_ptrs((void**)paths, plist->size);
-    free_list(plist);
+    free_ptrs((void**)paths, pyolo_list->size);
+    free_yolo_list(pyolo_list);
     free(base);
 }
 
@@ -162,18 +162,18 @@ void train_classifier(char *datacfg, char *cfgfile, char *weightfile, int *gpus,
    int imgs = net.batch * net.subdivisions;
 
    printf("Learning Rate: %g, Momentum: %g, Decay: %g\n", net.learning_rate, net.momentum, net.decay);
-   list *options = read_data_cfg(datacfg);
+   yolo_list *options = read_data_cfg(datacfg);
 
    char *backup_directory = option_find_str(options, "backup", "/backup/");
-   char *label_list = option_find_str(options, "labels", "data/labels.list");
-   char *train_list = option_find_str(options, "train", "data/train.list");
+   char *label_yolo_list = option_find_str(options, "labels", "data/labels.list");
+   char *train_yolo_list = option_find_str(options, "train", "data/train.list");
    int classes = option_find_int(options, "classes", 2);
 
-   char **labels = get_labels(label_list);
-   list *plist = get_paths(train_list);
-   char **paths = (char **)list_to_array(plist);
-   printf("%d\n", plist->size);
-   int N = plist->size;
+   char **labels = get_labels(label_yolo_list);
+   yolo_list *pyolo_list = get_paths(train_yolo_list);
+   char **paths = (char **)yolo_list_to_array(pyolo_list);
+   printf("%d\n", pyolo_list->size);
+   int N = pyolo_list->size;
    clock_t time;
 
    load_args args = {0};
@@ -250,8 +250,8 @@ save_weights(net, buff);
 
 free_network(net);
 free_ptrs((void**)labels, classes);
-free_ptrs((void**)paths, plist->size);
-free_list(plist);
+free_ptrs((void**)paths, pyolo_list->size);
+free_yolo_list(pyolo_list);
 free(base);
 }
 */
@@ -265,19 +265,19 @@ void validate_classifier_crop(char *datacfg, char *filename, char *weightfile)
     }
     srand(time(0));
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *label_list = option_find_str(options, "labels", "data/labels.list");
-    char *valid_list = option_find_str(options, "valid", "data/train.list");
+    char *label_yolo_list = option_find_str(options, "labels", "data/labels.list");
+    char *valid_yolo_list = option_find_str(options, "valid", "data/train.list");
     int classes = option_find_int(options, "classes", 2);
     int topk = option_find_int(options, "top", 1);
 
-    char **labels = get_labels(label_list);
-    list *plist = get_paths(valid_list);
+    char **labels = get_labels(label_yolo_list);
+    yolo_list *pyolo_list = get_paths(valid_yolo_list);
 
-    char **paths = (char **)list_to_array(plist);
-    int m = plist->size;
-    free_list(plist);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int m = pyolo_list->size;
+    free_yolo_list(pyolo_list);
 
     clock_t time;
     float avg_acc = 0;
@@ -333,19 +333,19 @@ void validate_classifier_10(char *datacfg, char *filename, char *weightfile)
     }
     srand(time(0));
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *label_list = option_find_str(options, "labels", "data/labels.list");
-    char *valid_list = option_find_str(options, "valid", "data/train.list");
+    char *label_yolo_list = option_find_str(options, "labels", "data/labels.list");
+    char *valid_yolo_list = option_find_str(options, "valid", "data/train.list");
     int classes = option_find_int(options, "classes", 2);
     int topk = option_find_int(options, "top", 1);
 
-    char **labels = get_labels(label_list);
-    list *plist = get_paths(valid_list);
+    char **labels = get_labels(label_yolo_list);
+    yolo_list *pyolo_list = get_paths(valid_yolo_list);
 
-    char **paths = (char **)list_to_array(plist);
-    int m = plist->size;
-    free_list(plist);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int m = pyolo_list->size;
+    free_yolo_list(pyolo_list);
 
     float avg_acc = 0;
     float avg_topk = 0;
@@ -405,19 +405,19 @@ void validate_classifier_full(char *datacfg, char *filename, char *weightfile)
     }
     srand(time(0));
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *label_list = option_find_str(options, "labels", "data/labels.list");
-    char *valid_list = option_find_str(options, "valid", "data/train.list");
+    char *label_yolo_list = option_find_str(options, "labels", "data/labels.list");
+    char *valid_yolo_list = option_find_str(options, "valid", "data/train.list");
     int classes = option_find_int(options, "classes", 2);
     int topk = option_find_int(options, "top", 1);
 
-    char **labels = get_labels(label_list);
-    list *plist = get_paths(valid_list);
+    char **labels = get_labels(label_yolo_list);
+    yolo_list *pyolo_list = get_paths(valid_yolo_list);
 
-    char **paths = (char **)list_to_array(plist);
-    int m = plist->size;
-    free_list(plist);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int m = pyolo_list->size;
+    free_yolo_list(pyolo_list);
 
     float avg_acc = 0;
     float avg_topk = 0;
@@ -466,21 +466,21 @@ void validate_classifier_single(char *datacfg, char *filename, char *weightfile)
     set_batch_network(&net, 1);
     srand(time(0));
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *label_list = option_find_str(options, "labels", "data/labels.list");
-    char *leaf_list = option_find_str(options, "leaves", 0);
-    if(leaf_list) change_leaves(net.hierarchy, leaf_list);
-    char *valid_list = option_find_str(options, "valid", "data/train.list");
+    char *label_yolo_list = option_find_str(options, "labels", "data/labels.list");
+    char *leaf_yolo_list = option_find_str(options, "leaves", 0);
+    if(leaf_yolo_list) change_leaves(net.hierarchy, leaf_yolo_list);
+    char *valid_yolo_list = option_find_str(options, "valid", "data/train.list");
     int classes = option_find_int(options, "classes", 2);
     int topk = option_find_int(options, "top", 1);
 
-    char **labels = get_labels(label_list);
-    list *plist = get_paths(valid_list);
+    char **labels = get_labels(label_yolo_list);
+    yolo_list *pyolo_list = get_paths(valid_yolo_list);
 
-    char **paths = (char **)list_to_array(plist);
-    int m = plist->size;
-    free_list(plist);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int m = pyolo_list->size;
+    free_yolo_list(pyolo_list);
 
     float avg_acc = 0;
     float avg_topk = 0;
@@ -528,21 +528,21 @@ void validate_classifier_multi(char *datacfg, char *filename, char *weightfile)
     }
     srand(time(0));
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *label_list = option_find_str(options, "labels", "data/labels.list");
-    char *valid_list = option_find_str(options, "valid", "data/train.list");
+    char *label_yolo_list = option_find_str(options, "labels", "data/labels.list");
+    char *valid_yolo_list = option_find_str(options, "valid", "data/train.list");
     int classes = option_find_int(options, "classes", 2);
     int topk = option_find_int(options, "top", 1);
 
-    char **labels = get_labels(label_list);
-    list *plist = get_paths(valid_list);
+    char **labels = get_labels(label_yolo_list);
+    yolo_list *pyolo_list = get_paths(valid_yolo_list);
     int scales[] = {224, 288, 320, 352, 384};
     int nscales = sizeof(scales)/sizeof(scales[0]);
 
-    char **paths = (char **)list_to_array(plist);
-    int m = plist->size;
-    free_list(plist);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int m = pyolo_list->size;
+    free_yolo_list(pyolo_list);
 
     float avg_acc = 0;
     float avg_topk = 0;
@@ -591,14 +591,14 @@ void try_classifier(char *datacfg, char *cfgfile, char *weightfile, char *filena
     set_batch_network(&net, 1);
     srand(2222222);
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *name_list = option_find_str(options, "names", 0);
-    if(!name_list) name_list = option_find_str(options, "labels", "data/labels.list");
+    char *name_yolo_list = option_find_str(options, "names", 0);
+    if(!name_yolo_list) name_yolo_list = option_find_str(options, "labels", "data/labels.list");
     int top = option_find_int(options, "top", 1);
 
     int i = 0;
-    char **names = get_labels(name_list);
+    char **names = get_labels(name_yolo_list);
     clock_t time;
     int *indexes = (int*)calloc(top, sizeof(int));
     char buff[256];
@@ -672,14 +672,14 @@ void predict_classifier(char *datacfg, char *cfgfile, char *weightfile, char *fi
     set_batch_network(&net, 1);
     srand(2222222);
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *name_list = option_find_str(options, "names", 0);
-    if(!name_list) name_list = option_find_str(options, "labels", "data/labels.list");
+    char *name_yolo_list = option_find_str(options, "names", 0);
+    if(!name_yolo_list) name_yolo_list = option_find_str(options, "labels", "data/labels.list");
     if(top == 0) top = option_find_int(options, "top", 1);
 
     int i = 0;
-    char **names = get_labels(name_list);
+    char **names = get_labels(name_yolo_list);
     clock_t time;
     int *indexes = (int*)calloc(top, sizeof(int));
     char buff[256];
@@ -728,18 +728,18 @@ void label_classifier(char *datacfg, char *filename, char *weightfile)
     }
     srand(time(0));
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *label_list = option_find_str(options, "names", "data/labels.list");
-    char *test_list = option_find_str(options, "test", "data/train.list");
+    char *label_yolo_list = option_find_str(options, "names", "data/labels.list");
+    char *test_yolo_list = option_find_str(options, "test", "data/train.list");
     int classes = option_find_int(options, "classes", 2);
 
-    char **labels = get_labels(label_list);
-    list *plist = get_paths(test_list);
+    char **labels = get_labels(label_yolo_list);
+    yolo_list *pyolo_list = get_paths(test_yolo_list);
 
-    char **paths = (char **)list_to_array(plist);
-    int m = plist->size;
-    free_list(plist);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int m = pyolo_list->size;
+    free_yolo_list(pyolo_list);
 
     for(i = 0; i < m; ++i){
         image im = load_image_color(paths[i], 0, 0);
@@ -766,16 +766,16 @@ void test_classifier(char *datacfg, char *cfgfile, char *weightfile, int target_
     }
     srand(time(0));
 
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
-    char *test_list = option_find_str(options, "test", "data/test.list");
+    char *test_yolo_list = option_find_str(options, "test", "data/test.list");
     int classes = option_find_int(options, "classes", 2);
 
-    list *plist = get_paths(test_list);
+    yolo_list *pyolo_list = get_paths(test_yolo_list);
 
-    char **paths = (char **)list_to_array(plist);
-    int m = plist->size;
-    free_list(plist);
+    char **paths = (char **)yolo_list_to_array(pyolo_list);
+    int m = pyolo_list->size;
+    free_yolo_list(pyolo_list);
 
     clock_t time;
 
@@ -842,7 +842,7 @@ void threat_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_i
         load_weights(&net, weightfile);
     }
     set_batch_network(&net, 1);
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
     srand(2222222);
     CvCapture * cap;
@@ -855,8 +855,8 @@ void threat_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_i
 
     int top = option_find_int(options, "top", 1);
 
-    char *name_list = option_find_str(options, "names", 0);
-    char **names = get_labels(name_list);
+    char *name_yolo_list = option_find_str(options, "names", 0);
+    char **names = get_labels(name_yolo_list);
 
     int *indexes = (int*)calloc(top, sizeof(int));
 
@@ -974,7 +974,7 @@ void gun_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_inde
         load_weights(&net, weightfile);
     }
     set_batch_network(&net, 1);
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
     srand(2222222);
     CvCapture * cap;
@@ -987,8 +987,8 @@ void gun_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_inde
 
     int top = option_find_int(options, "top", 1);
 
-    char *name_list = option_find_str(options, "names", 0);
-    char **names = get_labels(name_list);
+    char *name_yolo_list = option_find_str(options, "names", 0);
+    char **names = get_labels(name_yolo_list);
 
     int *indexes = (int*)calloc(top, sizeof(int));
 
@@ -1051,7 +1051,7 @@ void demo_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_ind
         load_weights(&net, weightfile);
     }
     set_batch_network(&net, 1);
-    list *options = read_data_cfg(datacfg);
+    yolo_list *options = read_data_cfg(datacfg);
 
     srand(2222222);
     CvCapture * cap;
@@ -1064,8 +1064,8 @@ void demo_classifier(char *datacfg, char *cfgfile, char *weightfile, int cam_ind
 
     int top = option_find_int(options, "top", 1);
 
-    char *name_list = option_find_str(options, "names", 0);
-    char **names = get_labels(name_list);
+    char *name_yolo_list = option_find_str(options, "names", 0);
+    char **names = get_labels(name_yolo_list);
 
     int *indexes = (int*)calloc(top, sizeof(int));
 
@@ -1117,22 +1117,22 @@ void run_classifier(int argc, char **argv)
         return;
     }
 
-    char *gpu_list = find_char_arg(argc, argv, "-gpus", 0);
+    char *gpu_yolo_list = find_char_arg(argc, argv, "-gpus", 0);
     int *gpus = 0;
     int gpu = 0;
     int ngpus = 0;
-    if(gpu_list){
-        printf("%s\n", gpu_list);
-        int len = strlen(gpu_list);
+    if(gpu_yolo_list){
+        printf("%s\n", gpu_yolo_list);
+        int len = strlen(gpu_yolo_list);
         ngpus = 1;
         int i;
         for(i = 0; i < len; ++i){
-            if (gpu_list[i] == ',') ++ngpus;
+            if (gpu_yolo_list[i] == ',') ++ngpus;
         }
         gpus = (int*)calloc(ngpus, sizeof(int));
         for(i = 0; i < ngpus; ++i){
-            gpus[i] = atoi(gpu_list);
-            gpu_list = strchr(gpu_list, ',')+1;
+            gpus[i] = atoi(gpu_yolo_list);
+            gpu_yolo_list = strchr(gpu_yolo_list, ',')+1;
         }
     } else {
         gpu = gpu_index;

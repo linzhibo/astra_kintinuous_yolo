@@ -2,7 +2,7 @@
 extern "C" {
 #endif
 
-list *read_data_cfg(char *filename);
+yolo_list *read_data_cfg(char *filename);
 
 #ifdef __cplusplus
 }
